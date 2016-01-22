@@ -1,0 +1,65 @@
+﻿@using System.Collections.Generic
+@using System.Web.Mvc.Html
+@using GlobalResources
+@using Microsoft.Azure.Devices.Applications.RemoteMonitoring.DeviceAdmin.Web.Helpers
+
+@model Microsoft.Azure.Devices.Applications.RemoteMonitoring.DeviceAdmin.Web.Models.DashboardModel
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    'use strict';
+
+    var resources = {
+        active: '@Strings.Active',
+        alarm: '@Strings.Alarm',
+        alarmHistory: '@Strings.AlarmHistory',
+        allClearStatusIcon: '/Content/img/icon_status_all_clear.svg',
+        cautionStatusIcon: '/Content/img/icon_status_caution.svg',
+        closed: '@Strings.Closed',
+        criticalStatusIcon: '/Content/img/icon_status_critical.svg',
+        humidity: '@Strings.Humidity',
+        information: '@Strings.Information',
+        telemetryGaugeNumericFormat: '@Strings.TelemetryGaugeNumericFormat',
+        temperature: '@Strings.Temperature',
+        alertHistoryType: '',
+        unableToRetrieveAlertsHistoryFromService: '@Strings.UnableToRetrieveAlertsHistoryFromService',
+        unableToRetrieveDeviceTelemetryFromService: '@Strings.UnableToRetrieveDeviceTelemetryFromService'
+    };
+</script>
+
+<div class="dashboard_content">
+    <div class="dashboard_left_column">
+        <div>
+            @{if (!string.IsNullOrWhiteSpace(Model.MapApiQueryKey))
+            {
+                <div id="deviceMap" class="dashboard_device_map">
+                    <script charset="UTF-8" type="text/javascript" src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&s=1"></script>
+                    <script type="text/javascript" src="~/Scripts/IoTHelperScripts.js"></script>
+
+                    <script src="~/Scripts/Views/Dashboard/MapPane.js"></script>
+
+                    <script>
+                        resources.alertHistoryType = "dashboard_alert_history--static_height";
+                    </script>
+                </div>
+            }
+            else
+            {
+                <img class="static_map" id="staticMap" src="~/Content/img/map_copyrights.png" alt="Map Img" />
+                <script>
+                    resources.alertHistoryType = "dashboard_alert_history--dynamic_height";
+                </script>
+            }
+            }
+        </div>
+        @{
+            Html.RenderPartial("_AlertHistory");
+        }
+    </div>
+    @{
+        Html.RenderPartial("_DashboardDevicePane", Model.DeviceIdsForDropdown);
+    }
+</div>
